@@ -1,0 +1,23 @@
+name: yollet_client
+description: Yollet API Client
+version: 0.0.1
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  grpc: ^3.0.0
+  jwt_decoder: ^2.0.1
+  pointycastle: ^3.1.1
+  pem: ^2.0.0
+  asn1lib: ^1.0.2
+  json_rpc_2: ^3.0.1
+  http: ^0.13.3
+  unique_identifier: ^0.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter

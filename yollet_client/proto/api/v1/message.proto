@@ -1,0 +1,332 @@
+syntax = "proto3";
+
+package api.v1;
+
+message Route {
+    string next_svc = 1;
+    string next_package = 2;
+    string next_api = 3;
+    bool hold_res = 4;
+    bool completed = 5;
+}
+
+message Common {
+    string target_name = 1;
+    string target_svc = 2;
+    string target_package = 3;
+    string target_api = 4;
+    string source_svc = 5;
+    string source_ver = 6;
+    string source_addr = 7;
+    string req_timestamp = 8;
+    string language_code = 9;
+    string rsp_timestamp = 10;
+    string tran_no = 11;
+    string res_code = 12;
+    string res_message = 13;
+    repeated Route routes = 14;
+    string authorization = 15; // 소스 서비스의 로그인 사용자 UUID
+}
+
+message Empty {
+    Common common = 1;
+}
+
+message User {
+    message Content {
+        string uuid = 1;
+        string user_type = 2; // 회원종류: 000(일반사용자), 100(상점), 200(대리점), 300(총판), 900(관리자)
+        string user_id = 3;
+        string domain = 4;
+        string password = 5;
+        string user_name = 6;
+        string tel_no = 7;
+        string email = 8;
+        repeated KeyValue user_info = 9; // 기타 사용자 정보는 key/value 로 전달
+        Device device = 10;
+        string old_password = 11;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message IdentityVerification {
+    message Content {
+        string tel_no = 1;
+        string email = 2;
+        string verification_code = 3; // 요청 시에는 비어 있음. 확인 시 문자나 이메일로 받은 인증번호 저장
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message KeyValue {
+    string key = 1;
+    string value = 2;
+}
+
+message Device {
+    string connection_type = 1; // 장치 연결 방법 (000: FCM 사용)
+    repeated string connection_data = 2; // FCM 사용 시 registration id 저장
+}
+
+// http://pms.ibexlab.com/confluence/pages/viewpage.action?pageId=26345555 참조
+message YolletPayData {
+    enum State {
+        START_PAY = 0;
+        REQUEST_TRANSFER = 1;
+        TRANSFER = 2;
+        END_PAY = 3;
+        START_REWARD = 4;
+        END_REWARD = 5;
+    }
+
+    message Content {
+        State state = 1;
+        string tran_no = 2;
+        string user_uuid = 3;
+        string token_id = 4;
+        string user_address = 5;
+        int64 expiration_time = 6;
+        string settlement_address = 7;
+        string store_name = 8;
+        string token_amount = 9;
+        string transfer_key = 10;
+        string transfer_signature = 11;
+        string transfer_comment = 12;
+        string transfer_transaction_id = 13;
+        string approval_no = 14;
+        string approval_date = 15;
+        string exchange_date_index = 16;
+        string exchange_rate = 17;
+        string exchange_amount = 18;
+        string exchange_currency = 19;
+        string reward_id = 20;
+        string reward_date = 21;
+        string reward_reason = 22;
+        string tid = 23;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message LicenseInfo {
+        string ver = 1;
+        string key	 = 2;
+        string pkg = 3;
+        string sign = 4;
+}
+message LicensePermission {
+        string device_id = 1;
+        string store_id = 2;
+        string terminal_id = 3;
+        string reg_date = 4;
+        int64 expire_date = 5;
+        string update_date = 6;
+        string app_version = 7;
+        string app_version_code = 8;
+        string sign = 9;
+        string state = 10;
+        string note = 11;
+}
+
+message AppVersionInfo {
+        string min_ver = 1;
+        string last_ver = 2;
+        string is_lock = 3;
+}
+
+
+message AppLicenseRegister {
+        string app_reg_id = 1;
+        string license_issued_id = 2;
+        string store_id = 3;
+        string store_terminal_id = 4;
+        string device_unique_value = 5;
+        string app_package_id = 6;
+        string reg_date = 7;
+        string open_date = 8;
+        int64 expire_date = 9;
+        string license_stat = 10;
+        string note = 11;
+        string custom_version_yn = 12;
+        string app_version_name = 13;
+        string app_current_version_code = 14;
+        string app_min_version_code = 15;
+        string app_last_version_code = 16;
+        string state_code = 17;
+}
+
+message IssueLicenseRequest {
+    message Content {
+        LicenseInfo license_info  = 1;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message IssueLicenseResponse {
+    message Content {
+        LicenseInfo license_info  = 1;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message RequestPermissionRequest {
+    message Content {
+        LicenseInfo license_info  = 1;
+        LicensePermission permission = 2;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message RequestPermissionResponse {
+    message Content {
+        LicenseInfo license_info  = 1;
+        LicensePermission permission = 2;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+
+message ConfirmPermissionRequest {
+    message Content {
+        LicenseInfo license_info  = 1;
+        LicensePermission permission = 2;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message ConfirmPermissionResponse {
+    message Content {
+        LicenseInfo license_info  = 1;
+        LicensePermission permission = 2;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+
+message VerifyLicenseRequest {
+    message Content {
+        LicenseInfo license_info  = 1;
+        LicensePermission permission = 2;
+        AppVersionInfo app_ver_info = 3;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message VerifyLicenseResponse {
+    message Content {
+        LicenseInfo license_info  = 1;
+        LicensePermission permission = 2;
+        AppVersionInfo app_ver_info = 3;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message GetLicenseListRequest {
+    message Content {
+        string store_id = 1;
+        int32 page = 2;
+        int32 limit = 3;
+        int32 order_store_id = 4;
+        int32 order_app_package_id = 5;
+        int32 order_open_date = 6;
+        int32 order_expire_date = 7;
+        int32 order_license_stat = 8;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message GetLicenseListResponse {
+    message Content {
+        repeated AppLicenseRegister item = 1;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message GetLicenseDetailRequest {
+    message Content {
+        string store_id = 1;
+        string app_reg_id  = 2;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message GetLicenseDetailResponse {
+    message Content {
+        AppLicenseRegister item = 1;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message UpdateLicenseInfoRequest {
+    message Content {
+    string store_id = 1;
+    string app_reg_id = 2;
+    int64 expire_date = 3;
+    string license_stat = 4;
+    string note = 5;
+    string custom_version_yn = 6;
+    string app_version_name = 7;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message UpdateLicenseInfoResponse {
+    message Content {
+        AppLicenseRegister item = 1;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message LoginDomain {
+    message Content {
+        repeated string domain = 1;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}
+
+message StoreTokenInfo {
+    message Content {
+        repeated string addresses = 1;
+        string loginId = 2;
+        string store_name = 3;
+        string tel_no = 4;
+    }
+
+    Common common = 1;
+    Content content = 2;
+}

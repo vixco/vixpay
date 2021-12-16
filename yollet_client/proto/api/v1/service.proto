@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package api.v1;
+
+import "api/v1/message.proto";
+
+service UserService {
+    // 성공 시 User.Content.uuid 에 신규 생성된 사용자 UUID 받아옴
+    // 실패 시 Common.res_code 에는 다음 코드를 가질 수 있음
+    // 10: 사용자 아이디 중복
+    // 11: 전화 번호 중복
+    // 12: 이메일 중복
+    // 01: 기타 내부 에러
+    rpc SignUp (User) returns (User);
+
+    // 요청 시 User.Content.uuid 에 값 넣어야 함
+    rpc GetUser (User) returns (User);
+
+    // 요청 시 User.Content.uuid 에 값 넣어야 함
+    rpc UpdateUser (User) returns (Empty);
+
+    // User 에 User.Content.tel_no, User.Content.email 을 넣으면 일부 마스킹 된 User.Content.user_id 돌려줌
+    rpc FindUserId (User) returns (User);
+
+    // 초기화는 2단계로 진행됨
+    // 1. 초기화 요청 시 PasswordReset.Content.tel_no, PasswordReset.Content.email 중에 값을 넣어서 요청
+    // 2. 사용자가 문자나 이메일로 인증번호 확인하면 PasswordReset.Content.validation_code 에 넣어서 요청
+    rpc ResetPassword (IdentityVerification) returns (Empty);
+
+    rpc VerifyIdentity (IdentityVerification) returns (Empty);
+
+    // 요청 시 uuid 및 password 에 값 넣어야 함
+    rpc Unregister (User) returns (Empty);
+}
+
+service PaymentsService {
+    rpc DoYolletPayment(stream YolletPayData) returns (stream YolletPayData);
+}
+
+service LicenseService {
+    rpc IssueLicense (IssueLicenseRequest) returns (IssueLicenseResponse);
+
+    rpc RequestPermission (RequestPermissionRequest) returns (RequestPermissionResponse);
+
+    rpc ConfirmPermission (ConfirmPermissionRequest) returns (ConfirmPermissionResponse);
+
+    rpc VerifyLicense (VerifyLicenseRequest) returns (VerifyLicenseResponse);
+
+    rpc GetLicenseList (GetLicenseListRequest) returns (GetLicenseListResponse);
+
+    rpc GetLicenseDetail (GetLicenseDetailRequest) returns (GetLicenseDetailResponse);
+
+    rpc UpdateLicenseInfo (UpdateLicenseInfoRequest) returns (UpdateLicenseInfoResponse);
+}
+
+service BusinessService {
+    rpc GetLoginDomains (Empty) returns (LoginDomain);
+
+    rpc GetStoreTokenInfo (StoreTokenInfo) returns (StoreTokenInfo);
+}
